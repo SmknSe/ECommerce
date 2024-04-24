@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/
+    username: user
+    password: 123
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: 34743777217A25432A462D4A614E645267556B58703273357638782F413F4428
+      expiration: 900_000
+      refresh-token:
+        expiration: 2_592_000_000
