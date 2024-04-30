@@ -30,18 +30,18 @@ public class SecurityConfig{
     private final String[] WHITE_LIST = {
             "/api/auth/**",
             "/api/cart/**",
-            "/api/users/current",
-            "/api/chats/**"
-    };
-    private final String[] SELLER_LIST = {
-            //todo
-    };
-    private final String[] ADMIN_LIST = {
-            "/api/users/**",
+            "/api/chats/**",
             "/api/products/**",
+            "/api/users/**",
             "/api/categories/**",
             "/api/orders/**",
             "/api/images/**"
+    };
+    private final String[] SELLER_LIST = {
+            "/api/products/**",
+    };
+    private final String[] ADMIN_LIST = {
+
     };
 
     @Bean

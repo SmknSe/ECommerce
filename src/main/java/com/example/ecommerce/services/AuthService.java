@@ -23,7 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public BasicResponse register(UserDTO userDTO){
-        userService.create(userDTO);
+        userService.createUser(userDTO);
         return BasicResponse.ok();
     }
 
@@ -74,7 +74,7 @@ public class AuthService {
 
         user.setPassword(passwordEncoder.encode(passwordDTO.newPassword()));
 
-        userService.update(user.getId(),user);
+        userService.updateUser(user.getId(),user);
         //todo session management
         return BasicResponse.ok();
     }

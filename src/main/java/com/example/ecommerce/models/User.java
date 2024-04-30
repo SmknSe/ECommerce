@@ -1,6 +1,8 @@
 package com.example.ecommerce.models;
 
 import com.example.ecommerce.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +31,7 @@ public class User implements UserDetails {
     @GeneratedValue
     private UUID id;
 
-    private String firstname;
-
-    private String lastname;
+    private String name;
 
     private String email;
 
@@ -41,6 +41,13 @@ public class User implements UserDetails {
     private Role role;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Product> products;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

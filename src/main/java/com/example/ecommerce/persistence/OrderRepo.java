@@ -1,6 +1,6 @@
 package com.example.ecommerce.persistence;
 
-import com.example.ecommerce.models.order.Order;
+import com.example.ecommerce.models.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

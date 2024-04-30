@@ -4,7 +4,6 @@ import com.example.ecommerce.DTO.PasswordDTO;
 import com.example.ecommerce.DTO.UserDTO;
 import com.example.ecommerce.responses.BasicResponse;
 import com.example.ecommerce.services.AuthService;
-import com.example.ecommerce.utils.ServiceCallHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<? extends BasicResponse> register(@RequestBody UserDTO userDTO){
-        return ServiceCallHandler.getResponse(()->authService.register(userDTO));
+        BasicResponse response = authService.register(userDTO);
+        return ResponseEntity.status(response.getStatusCode()).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<? extends BasicResponse> login(
             @RequestBody UserDTO userDTO,
             HttpServletResponse response){
-        return ServiceCallHandler.getResponse(()->authService.login(userDTO,response));
+        BasicResponse basicResponse = authService.login(userDTO,response);
+        return ResponseEntity.status(basicResponse.getStatusCode()).build();
     }
 
     @PostMapping("/refresh-token")
@@ -37,7 +38,8 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ){
-        return ServiceCallHandler.getResponse(()->authService.refreshToken(request,response));
+        BasicResponse basicResponse = authService.refreshToken(request,response);
+        return ResponseEntity.status(basicResponse.getStatusCode()).build();
     }
 
     @PostMapping("/change-password")
@@ -45,11 +47,13 @@ public class AuthController {
             @RequestBody PasswordDTO passwordDTO,
             HttpServletRequest request
             ){
-        return ServiceCallHandler.getResponse(()->authService.changePassword(passwordDTO,request));
+        BasicResponse basicResponse = authService.changePassword(passwordDTO,request);
+        return ResponseEntity.status(basicResponse.getStatusCode()).build();
     }
 
     @PostMapping("/logout")
     public ResponseEntity<? extends BasicResponse> logout(HttpServletRequest request){
-        return ServiceCallHandler.getResponse(()->authService.logout(request));
+        BasicResponse basicResponse = authService.logout(request);
+        return ResponseEntity.status(basicResponse.getStatusCode()).build();
     }
 }

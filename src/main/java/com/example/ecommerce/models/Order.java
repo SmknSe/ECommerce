@@ -1,7 +1,9 @@
-package com.example.ecommerce.models.order;
+package com.example.ecommerce.models;
 
 import com.example.ecommerce.enums.OrderStatus;
-import com.example.ecommerce.models.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +32,16 @@ public class Order {
     private BigDecimal total;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderItem> items;
+    @JsonManagedReference
+    private List<Product> products;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     public void recalculateTotal(){
-        total = items.stream()
-                .map(OrderItem::getTotal)
+        total = products.stream()
+                .map(Product::getPrice)
                 .reduce(BigDecimal.ZERO,BigDecimal::add)
                 .setScale(2, RoundingMode.HALF_UP);
     }

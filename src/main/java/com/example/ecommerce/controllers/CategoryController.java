@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
@@ -13,13 +15,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Category category){
-        return ResponseEntity.ok(categoryService.create(category));
+    public ResponseEntity<?> createAll(@RequestBody List<Category> categories){
+        return ResponseEntity.ok(categoryService.createCategory(categories));
     }
 
     @DeleteMapping("/{name}")
     public ResponseEntity<?> delete(@PathVariable String name){
-        return ResponseEntity.ok(categoryService.delete(name));
+        return ResponseEntity.ok(categoryService.deleteCategoryByName(name));
     }
 
     @DeleteMapping
@@ -29,11 +31,11 @@ public class CategoryController {
 
     @GetMapping("/{name}")
     public ResponseEntity<?> read(@PathVariable String name){
-        return ResponseEntity.ok(categoryService.read(name));
+        return ResponseEntity.ok(categoryService.findCategoryByName(name));
     }
 
     @GetMapping
     public ResponseEntity<?> readAll(){
-        return ResponseEntity.ok(categoryService.readAll());
+        return ResponseEntity.ok(categoryService.findAll());
     }
 }

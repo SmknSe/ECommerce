@@ -1,12 +1,16 @@
 package com.example.ecommerce.services;
 
+import com.example.ecommerce.DTO.ChatDTO;
 import com.example.ecommerce.models.Chat;
 import com.example.ecommerce.persistence.ChatRepo;
+import com.example.ecommerce.responses.DataResponse;
+import com.example.ecommerce.utils.Mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +35,11 @@ public class ChatService {
         return newChat;
     }
 
-    public List<Chat> getChatsByName(String name) {
-        return chatRepo.findAllByFirstUserOrSecondUser(name,name);
+    public DataResponse<?> getChatsByName(String name) {
+        List<Chat> chats = chatRepo.findAllByFirstUserOrSecondUser(name,name);
+        List<ChatDTO> dtos = chats.stream()
+                .map(chat -> ChatMapper.toDto(chat,name))
+                .collect(Collectors.toList());
+        return DataResponse.ok(dtos);
     }
 }

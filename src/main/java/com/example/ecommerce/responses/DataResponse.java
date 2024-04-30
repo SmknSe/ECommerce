@@ -1,5 +1,9 @@
 package com.example.ecommerce.responses;
 
+import lombok.Data;
+import lombok.Getter;
+
+@Getter
 public class DataResponse<T> extends BasicResponse{
     T data;
 

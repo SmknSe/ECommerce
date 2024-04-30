@@ -8,9 +8,7 @@ import java.util.UUID;
 
 public record UserDTO(
         UUID id,
-        String firstname,
-        String lastname,
-        String username,
+        String name,
         String email,
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         String password,
@@ -19,15 +17,15 @@ public record UserDTO(
         timezone = "Europe/Moscow")
         LocalDateTime createdAt
 ) {
-    public UserDTO(String firstname, String lastname, String username, String email,
-                   String password, String role, LocalDateTime createdAt
+    public UserDTO(String name, String email,
+                   String password, String role
     ) {
-        this(null, firstname, lastname, username, email, password, role, createdAt);
+        this(null, name, email, password, role, LocalDateTime.now());
     }
 
-    public UserDTO(String firstname, String lastname, String username, String email,
+    public UserDTO(String name, String email,
                    String password
     ) {
-        this(null, firstname, lastname, username, email, password, "USER", null);
+        this(null, name, email, password, "USER", LocalDateTime.now());
     }
 }
