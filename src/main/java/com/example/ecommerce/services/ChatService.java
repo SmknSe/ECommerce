@@ -1,11 +1,14 @@
 package com.example.ecommerce.services;
 
 import com.example.ecommerce.DTO.ChatDTO;
+import com.example.ecommerce.exceptions.NoAuthenticationException;
 import com.example.ecommerce.models.Chat;
+import com.example.ecommerce.models.User;
 import com.example.ecommerce.persistence.ChatRepo;
 import com.example.ecommerce.responses.DataResponse;
 import com.example.ecommerce.utils.Mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +38,11 @@ public class ChatService {
         return newChat;
     }
 
-    public DataResponse<?> getChatsByName(String name) {
+    public DataResponse<?> getChatsByName(Authentication authentication) {
+        if (authentication == null)
+            throw new NoAuthenticationException();
+        User user = (User) authentication.getPrincipal();
+        String name = user.getName();
         List<Chat> chats = chatRepo.findAllByFirstUserOrSecondUser(name,name);
         List<ChatDTO> dtos = chats.stream()
                 .map(chat -> ChatMapper.toDto(chat,name))

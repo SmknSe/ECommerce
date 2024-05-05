@@ -12,6 +12,21 @@ spring:
       hibernate:
         format_sql: true
 
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: furniture_commerce@mail.ru
+    password: 0kDSsUEA2Bvyh09qNtWt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+
 application:
   security:
     jwt:

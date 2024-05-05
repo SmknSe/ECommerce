@@ -2,24 +2,21 @@ package com.example.ecommerce.services;
 
 import com.example.ecommerce.DTO.SellerDTO;
 import com.example.ecommerce.DTO.UserDTO;
-import com.example.ecommerce.enums.OrderStatus;
 import com.example.ecommerce.enums.Role;
-import com.example.ecommerce.models.Order;
 import com.example.ecommerce.models.User;
 import com.example.ecommerce.persistence.UserRepo;
-import com.example.ecommerce.responses.BasicResponse;
 import com.example.ecommerce.responses.DataResponse;
+import com.example.ecommerce.utils.CookieUtils;
 import com.example.ecommerce.utils.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -29,16 +26,10 @@ public class UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final OrderService orderService;
+    private final JwtService jwtService;
 
     public DataResponse<?> getUserById(UUID id){
-        return DataResponse.ok(userRepo
-                .findById(id)
-                .orElseThrow(()->
-                        new EntityNotFoundException(
-                                "User with id "+id+" doesnt exist"
-                        )
-                )
-        );
+        return DataResponse.ok(getUser(id));
     }
 
     public User getUserByEmail(String email){
@@ -75,12 +66,7 @@ public class UserService {
 
         User createdUser = userRepo.save(newUser);
 
-        orderService.createOrder(Order.builder()
-                .status(OrderStatus.CART)
-                .total(BigDecimal.ZERO)
-                .products(Collections.emptyList())
-                .user(createdUser)
-                .build());
+        orderService.createCartByUser(createdUser);
 
         return DataResponse.created(createdUser);
     }
@@ -98,13 +84,7 @@ public class UserService {
     }
 
     public DataResponse<?> getUserSellerInfoById(UUID id) {
-        User user = userRepo
-                .findById(id)
-                .orElseThrow(()->
-                        new EntityNotFoundException(
-                                "User with id "+id+" doesnt exist"
-                        )
-                );
+        User user = getUser(id);
         SellerDTO dto = SellerDTO.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -112,4 +92,22 @@ public class UserService {
                 .build();
         return DataResponse.ok(dto);
     }
+
+    public User getUser(UUID uuid){
+        return userRepo
+                .findById(uuid)
+                .orElseThrow(()->
+                        new EntityNotFoundException(
+                                "User with id "+uuid+" doesnt exist"
+                        )
+                );
+    }
+
+    public User getUserFromRequest(HttpServletRequest request){
+        String accessToken = CookieUtils.extractTokenFromCookie(request,"access_token");
+
+        String email = jwtService.getUsername(accessToken);
+        return getUserByEmail(email);
+    }
+
 }

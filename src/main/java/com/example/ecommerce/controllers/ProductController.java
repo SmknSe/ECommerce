@@ -6,6 +6,7 @@ import com.example.ecommerce.services.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,8 +20,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<? extends BasicResponse> createProduct(
             @RequestBody ProductDTO dto,
-            HttpServletRequest request){
-        var response = productService.createProduct(dto, request);
+            Authentication authentication){
+        var response = productService.createProduct(dto, authentication);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -41,9 +42,10 @@ public class ProductController {
     @PatchMapping("/{uuid}")
     public ResponseEntity<? extends BasicResponse> updateProduct(
             @RequestBody ProductDTO productDTO,
-            @PathVariable UUID uuid
+            @PathVariable UUID uuid,
+            Authentication authentication
     ){
-        var response = productService.updateProduct(uuid,productDTO);
+        var response = productService.updateProduct(uuid,productDTO,authentication);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

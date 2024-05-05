@@ -22,26 +22,22 @@ public class SecurityConfig{
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
     private final String[] GET_WHITE_LIST = {
-            "/api/products/**",
             "/api/categories/**",
-            "/api/orders/current-user",
-            "/api/images/**"
+            "/api/users/seller-info/**"
     };
     private final String[] WHITE_LIST = {
             "/api/auth/**",
             "/api/cart/**",
-            "/api/chats/**",
             "/api/products/**",
-            "/api/users/**",
-            "/api/categories/**",
             "/api/orders/**",
-            "/api/images/**"
-    };
-    private final String[] SELLER_LIST = {
+            "/api/images/**",
             "/api/products/**",
+            "/api/chats/**",
+
     };
     private final String[] ADMIN_LIST = {
-
+            "/api/categories/**",
+            "/api/users/**"
     };
 
     @Bean
@@ -52,7 +48,6 @@ public class SecurityConfig{
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(GET, GET_WHITE_LIST).permitAll()
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(SELLER_LIST).hasAnyRole(Role.SELLER.name())
                         .requestMatchers(ADMIN_LIST).hasAnyRole(Role.ADMIN.name())
                         .anyRequest()
                         .authenticated()

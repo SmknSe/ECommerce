@@ -1,6 +1,8 @@
 package com.example.ecommerce.models;
 
+import com.example.ecommerce.enums.ProductStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,16 +29,19 @@ public class Product {
 
     private String productImg;
 
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+
     @ManyToOne
     @JsonIncludeProperties(value = "name")
     private Category category;
 
-    @ManyToOne
-    @JsonBackReference
-    private Order order;
+    @ManyToMany
+    @JsonIgnore
+    private Set<Order> orders;
 
     @ManyToOne
-    @JsonIncludeProperties(value = "name")
+    @JsonIncludeProperties(value = {"id","name"})
     private User owner;
 
     public Product(String title, BigDecimal price, String productImg) {

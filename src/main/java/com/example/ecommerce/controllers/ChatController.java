@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
     private final ChatService chatService;
 
-    @GetMapping("/{name}")
-    public ResponseEntity<? extends BasicResponse> getChatsByName(@PathVariable String name, Authentication authentication){
-        var response = chatService.getChatsByName(name);
+    @GetMapping()
+    public ResponseEntity<? extends BasicResponse> getChatsByName(Authentication authentication){
+        var response = chatService.getChatsByName(authentication);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 }

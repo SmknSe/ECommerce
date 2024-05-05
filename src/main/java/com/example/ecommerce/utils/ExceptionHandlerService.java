@@ -1,6 +1,8 @@
 package com.example.ecommerce.utils;
 
+import com.example.ecommerce.exceptions.NoAuthenticationException;
 import com.example.ecommerce.responses.BasicResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,13 @@ public class ExceptionHandlerService {
             EntityNotFoundException.class})
     @ResponseStatus(BAD_REQUEST)
     public String handleArgumentOrState(Exception e){
+        System.out.println(e.getMessage());
+        return e.getMessage();
+    }
+
+    @ExceptionHandler({NoAuthenticationException.class, ExpiredJwtException.class})
+    @ResponseStatus(UNAUTHORIZED)
+    public String handleAuthenticationException(Exception e) {
         System.out.println(e.getMessage());
         return e.getMessage();
     }

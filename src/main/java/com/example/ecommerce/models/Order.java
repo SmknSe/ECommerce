@@ -1,8 +1,7 @@
 package com.example.ecommerce.models;
 
 import com.example.ecommerce.enums.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,18 +29,10 @@ public class Order {
 
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "order")
-    @JsonManagedReference
-    private List<Product> products;
+    @ManyToMany
+    private Set<Product> products;
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIncludeProperties(value = {"id","name"})
     private User user;
-
-    public void recalculateTotal(){
-        total = products.stream()
-                .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO,BigDecimal::add)
-                .setScale(2, RoundingMode.HALF_UP);
-    }
 }
