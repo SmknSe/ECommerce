@@ -14,7 +14,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .allowedOrigins("http://localhost:8081",
                         "http://localhost:3000",
-                        "http://localhost:5173")
+                        "http://localhost:5173",
+                        "https://ecommerce-front-14db.onrender.com")
                 .allowedMethods("*");
     }
 }
