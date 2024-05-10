@@ -23,7 +23,10 @@ import java.util.UUID;
 @Entity
 @Data
 @Builder
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
