@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: https://dpg-cov7go021fec73fg118g-a.frankfurt-postgres.render.com/ecommerce_h67e
+    url: jdbc:postgresql://dpg-cov7go021fec73fg118g-a.frankfurt-postgres.render.com:5432/ecommerce_h67e
     username: ecommerce_h67e_user
     password: pNkt0IhkfreFXqVgONdTALqPb1HoPpcT
 
