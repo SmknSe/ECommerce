@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/
-    username: user
-    password: 123
+    url: https://dpg-cov7go021fec73fg118g-a.frankfurt-postgres.render.com/ecommerce_h67e
+    username: ecommerce_h67e_user
+    password: pNkt0IhkfreFXqVgONdTALqPb1HoPpcT
 
   jpa:
     hibernate:
@@ -35,4 +35,4 @@ application:
       refresh-token:
         expiration: 2_592_000_000
   paths:
-    images: D:/Desktop/универ/3 курс/2 сем/рксп/КР/ECommerce/src/main/resources/images/
+    images: /app/images/
