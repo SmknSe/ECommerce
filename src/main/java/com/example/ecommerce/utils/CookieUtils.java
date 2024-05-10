@@ -19,7 +19,7 @@ public class CookieUtils {
                 .value(token)
                 .sameSite("None")
                 .maxAge(Duration.ofSeconds(maxAgeProp))
-                .domain("localhost")
+//                .domain("localhost")
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
