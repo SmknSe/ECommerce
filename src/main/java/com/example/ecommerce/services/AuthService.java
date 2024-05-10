@@ -1,10 +1,12 @@
 package com.example.ecommerce.services;
 
+import com.example.ecommerce.DTO.AuthDTO;
 import com.example.ecommerce.DTO.PasswordDTO;
 import com.example.ecommerce.DTO.UserDTO;
 import com.example.ecommerce.exceptions.NoAuthenticationException;
 import com.example.ecommerce.models.User;
 import com.example.ecommerce.responses.BasicResponse;
+import com.example.ecommerce.responses.DataResponse;
 import com.example.ecommerce.utils.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +29,7 @@ public class AuthService {
         return BasicResponse.ok();
     }
 
-    public BasicResponse login(UserDTO userDTO, HttpServletResponse response){
+    public DataResponse<AuthDTO> login(UserDTO userDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDTO.email(),
@@ -36,13 +38,20 @@ public class AuthService {
         );
 
         User user = userService.getUserByEmail(userDTO.email());
-
+        UserDTO dto = UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().toString())
+                .createdAt(user.getCreatedAt())
+                .build();
         String accessToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-
-        response.addCookie(CookieUtils.createJwtCookie(accessToken,"access_token"));
-        response.addCookie(CookieUtils.createJwtCookie(refreshToken,"refresh_token"));
-        return BasicResponse.ok();
+        return DataResponse.ok(AuthDTO.builder()
+                .userDTO(dto)
+                .accessJwt(accessToken)
+                .refreshJwt(refreshToken)
+                .build());
     }
 
     public BasicResponse logout(HttpServletRequest request){
@@ -50,16 +59,28 @@ public class AuthService {
         return BasicResponse.ok();
     }
 
-    public BasicResponse refreshToken(HttpServletRequest request, HttpServletResponse response){
+    public DataResponse<AuthDTO> refreshToken(HttpServletRequest request){
+        System.out.println("refreshed");
         String accessToken = CookieUtils.extractTokenFromCookie(request,"access_token");
         String refreshToken = CookieUtils.extractTokenFromCookie(request,"refresh_token");
 
         String email = jwtService.getUsername(refreshToken);
         User user = userService.getUserByEmail(email);
 
-        String newAccessToken = jwtService.generateToken(user);
-        response.addCookie(CookieUtils.createJwtCookie(newAccessToken, "access_token"));
-        return BasicResponse.ok();
+        var newAccessJwt = jwtService.generateToken(user);
+        var newRefreshJwt = jwtService.generateRefreshToken(user);
+        UserDTO dto = UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().toString())
+                .createdAt(user.getCreatedAt())
+                .build();
+        return DataResponse.ok(AuthDTO.builder()
+                .userDTO(dto)
+                .accessJwt(newAccessJwt)
+                .refreshJwt(newRefreshJwt)
+                .build());
     }
 
     public BasicResponse changePassword(PasswordDTO passwordDTO, HttpServletRequest request){

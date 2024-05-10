@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,6 +32,8 @@ public class Order {
 
     @ManyToMany
     private Set<Product> products;
+
+    private LocalDateTime date;
 
     @ManyToOne
     @JsonIncludeProperties(value = {"id","name"})

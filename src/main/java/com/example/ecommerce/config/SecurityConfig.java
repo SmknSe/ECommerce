@@ -23,7 +23,7 @@ public class SecurityConfig{
     private final AuthenticationProvider authenticationProvider;
     private final String[] GET_WHITE_LIST = {
             "/api/categories/**",
-            "/api/users/seller-info/**"
+            "/api/users/**"
     };
     private final String[] WHITE_LIST = {
             "/api/auth/**",

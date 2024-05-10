@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
@@ -19,9 +22,16 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<? extends BasicResponse> createProduct(
-            @RequestBody ProductDTO dto,
-            Authentication authentication){
-        var response = productService.createProduct(dto, authentication);
+            @RequestParam String title,
+            @RequestParam BigDecimal price,
+            @RequestParam String category,
+            @RequestParam MultipartFile file,
+            Authentication authentication) throws IOException {
+        var response = productService.createProduct(ProductDTO.builder()
+                .title(title)
+                .price(price)
+                .category(category)
+                .build(), file, authentication);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

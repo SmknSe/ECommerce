@@ -7,10 +7,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+
+import java.io.IOException;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
@@ -26,9 +31,18 @@ public class ExceptionHandlerService {
         return e.getMessage();
     }
 
-    @ExceptionHandler({NoAuthenticationException.class, ExpiredJwtException.class})
+    @ExceptionHandler({NoAuthenticationException.class,
+            ExpiredJwtException.class,
+            AuthenticationException.class})
     @ResponseStatus(UNAUTHORIZED)
     public String handleAuthenticationException(Exception e) {
+        System.out.println(e.getMessage());
+        return e.getMessage();
+    }
+
+    @ExceptionHandler({IOException.class})
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public String handleFileException(Exception e){
         System.out.println(e.getMessage());
         return e.getMessage();
     }

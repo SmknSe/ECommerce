@@ -4,6 +4,7 @@ import com.example.ecommerce.responses.BasicResponse;
 import com.example.ecommerce.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +19,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<? extends BasicResponse> getAllUsers(){
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<? extends BasicResponse> getCurrentUser(
+            Authentication authentication
+    ){
+        return ResponseEntity.ok(userService.getCurrentUser(authentication));
     }
 
     @GetMapping("/{uuid}")

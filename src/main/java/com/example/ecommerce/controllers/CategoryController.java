@@ -38,4 +38,9 @@ public class CategoryController {
     public ResponseEntity<?> readAll(){
         return ResponseEntity.ok(categoryService.findAll());
     }
+
+    @GetMapping("/filter/name")
+    public ResponseEntity<?> readNames(){
+        return ResponseEntity.ok(categoryService.findAllNames());
+    }
 }

@@ -2,22 +2,28 @@ package com.example.ecommerce.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseCookie;
+
+import java.time.Duration;
 
 public class CookieUtils {
     private CookieUtils(){}
-    public static Cookie createJwtCookie(String token, String cookieName){
-        Cookie jwtCookie = new Cookie(cookieName, token);
+    public static ResponseCookie createJwtCookie(String cookieName, String token) {
+        return createJwtCookie(cookieName, token, null);
+    }
 
-        if (cookieName.equals("access_token"))
-            jwtCookie.setMaxAge(900_000);
-        else
-            jwtCookie.setMaxAge(864_000_000);
-
-        jwtCookie.setSecure(true);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setAttribute("SameSite", "None");
-        return jwtCookie;
+    public static ResponseCookie createJwtCookie(String cookieName, String token, Integer maxAge) {
+        int maxAgeProp = maxAge == null ? (cookieName.equals("access_token") ? 86400 : 604800) : 0;
+        return ResponseCookie
+                .from(cookieName)
+                .value(token)
+                .sameSite("None")
+                .maxAge(Duration.ofSeconds(maxAgeProp))
+                .domain("localhost")
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .build();
     }
 
     public static String extractTokenFromCookie(HttpServletRequest request, String tokenName){

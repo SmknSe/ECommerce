@@ -40,6 +40,4 @@ public class ChatMessageService {
     public long countAllNewMessages(String username){
         return chatMessageRepo.countByReceiverAndStatus(username,ChatMessageStatus.SENT);
     }
-
-
 }

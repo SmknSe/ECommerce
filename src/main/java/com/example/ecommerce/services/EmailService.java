@@ -21,7 +21,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     String username;
-    String subject = "Your order in WHYNOTPC shop";
+    String subject = "Your order in Furniture Store";
 
     @Async
     public void sendOrderConfirmMail(String receiver, Order order) throws MessagingException {

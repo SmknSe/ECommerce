@@ -2,10 +2,12 @@ package com.example.ecommerce.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Builder
 public record UserDTO(
         UUID id,
         String name,

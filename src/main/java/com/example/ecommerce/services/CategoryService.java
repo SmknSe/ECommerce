@@ -3,6 +3,7 @@ package com.example.ecommerce.services;
 import com.example.ecommerce.models.Category;
 import com.example.ecommerce.persistence.CategoryRepo;
 import com.example.ecommerce.responses.BasicResponse;
+import com.example.ecommerce.responses.DataResponse;
 import com.example.ecommerce.utils.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -54,5 +55,9 @@ public class CategoryService {
 
     public List<Category> findAll() {
         return categoryRepo.findAll();
+    }
+
+    public DataResponse<?> findAllNames() {
+        return DataResponse.ok(categoryRepo.findAllNames());
     }
 }

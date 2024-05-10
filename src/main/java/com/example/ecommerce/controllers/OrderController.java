@@ -21,6 +21,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getCart(authentication));
     }
 
+    @DeleteMapping("/cart")
+    public ResponseEntity<? extends BasicResponse> clearCart(Authentication authentication){
+        return ResponseEntity.ok(orderService.clearCart(authentication));
+    }
+
     @PostMapping("/cart/{uuid}")
     public ResponseEntity<? extends BasicResponse> addProduct(
             @PathVariable UUID uuid,

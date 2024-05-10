@@ -12,9 +12,13 @@ import com.example.ecommerce.responses.DataResponse;
 import com.example.ecommerce.utils.Mapper.ProductMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -22,7 +26,10 @@ import java.util.UUID;
 public class ProductService {
     private final ProductRepo productRepo;
     private final CategoryService categoryService;
-    public DataResponse<?> createProduct(ProductDTO dto, Authentication authentication){
+
+    @Value("${application.paths.images}")
+    private String folderPath;
+    public DataResponse<?> createProduct(ProductDTO dto, MultipartFile file, Authentication authentication) throws IOException {
         if (authentication == null)
             throw new NoAuthenticationException();
         User user = (User) authentication.getPrincipal();
@@ -32,7 +39,13 @@ public class ProductService {
         Category category = categoryService.findCategoryByName(dto.category());
         product.setCategory(category);
         product.setOwner(user);
-        product.setStatus(ProductStatus.ON_SALE);
+
+        if (file != null){
+            String filename = user.getUsername()+product.getTitle();
+            product.setProductImg(filename);
+            file.transferTo(new File(folderPath+filename));
+        }
+
         productRepo.save(product);
         return DataResponse.created(dto);
     }

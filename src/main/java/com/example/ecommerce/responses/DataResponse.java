@@ -1,6 +1,5 @@
 package com.example.ecommerce.responses;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

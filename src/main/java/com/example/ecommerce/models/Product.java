@@ -1,13 +1,11 @@
 package com.example.ecommerce.models;
 
 import com.example.ecommerce.enums.ProductStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -15,8 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "products")
 public class Product {
     @Id
@@ -48,5 +45,6 @@ public class Product {
         this.title = title;
         this.price = price;
         this.productImg = productImg;
+        status = ProductStatus.ON_SALE;
     }
 }

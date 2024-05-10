@@ -3,14 +3,17 @@ package com.example.ecommerce.services;
 import com.example.ecommerce.DTO.SellerDTO;
 import com.example.ecommerce.DTO.UserDTO;
 import com.example.ecommerce.enums.Role;
+import com.example.ecommerce.exceptions.NoAuthenticationException;
 import com.example.ecommerce.models.User;
 import com.example.ecommerce.persistence.UserRepo;
+import com.example.ecommerce.responses.BasicResponse;
 import com.example.ecommerce.responses.DataResponse;
 import com.example.ecommerce.utils.CookieUtils;
 import com.example.ecommerce.utils.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -110,4 +113,17 @@ public class UserService {
         return getUserByEmail(email);
     }
 
+    public DataResponse<?> getCurrentUser(Authentication authentication) {
+        if (authentication == null)
+            throw new NoAuthenticationException();
+        User user = (User) authentication.getPrincipal();
+        UserDTO dto = UserDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().toString())
+                .createdAt(user.getCreatedAt())
+                .build();
+        return DataResponse.ok(dto);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.ecommerce.services;
 
+import com.example.ecommerce.DTO.OrderDTO;
 import com.example.ecommerce.enums.OrderStatus;
 import com.example.ecommerce.enums.ProductStatus;
 import com.example.ecommerce.exceptions.NoAuthenticationException;
@@ -16,7 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.UUID;
 
 @Service
@@ -41,6 +45,7 @@ public class OrderService {
                 .stream()
                 .anyMatch(product -> product.getStatus()==ProductStatus.PURCHASED))
             throw new IllegalStateException("Some products arent available");
+        previous.setDate(LocalDateTime.now());
         previous.getProducts().forEach(
                 product -> product.setStatus(ProductStatus.PURCHASED)
         );
@@ -49,7 +54,7 @@ public class OrderService {
         try {
             User user = (User) authentication.getPrincipal();
             emailService.sendOrderConfirmMail(user.getEmail(),previous);
-            emailService.sendProductOwnerMail(previous);
+//            emailService.sendProductOwnerMail(previous);
         } catch (MessagingException ex) {
             System.out.println(ex.getMessage());
         }
@@ -133,6 +138,25 @@ public class OrderService {
         if (authentication == null)
             throw new NoAuthenticationException();
         User user = (User) authentication.getPrincipal();
-        return DataResponse.ok(orderRepo.getOrderByUserId(user.getId()));
+        var orders = orderRepo.getOrderByUserId(user.getId()).stream()
+                .filter(order -> order.getStatus() != OrderStatus.CART)
+                .map(order -> OrderDTO.builder()
+                        .uuid(order.getId())
+                        .status(order.getStatus().toString())
+                        .date(order.getDate().format(DateTimeFormatter.ofPattern("yyyy-dd-MM")))
+                        .total(order.getTotal())
+                        .build())
+                .toList();
+        return DataResponse.ok(
+                orders
+        );
+    }
+
+    public DataResponse<?> clearCart(Authentication authentication) {
+        Order order = (Order) getCart(authentication).getData();
+        order.setProducts(Collections.emptySet());
+        order.setTotal(BigDecimal.ZERO);
+        orderRepo.save(order);
+        return DataResponse.ok(order);
     }
 }
